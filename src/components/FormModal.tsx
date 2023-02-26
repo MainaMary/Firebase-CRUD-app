@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import CustomInput from './CustomInput'
 import CustomLabel from './CustomLabel'
 import CustomButton from './CustomButton'
@@ -19,12 +19,22 @@ const InitialValues = {
     desc: "",
    
 }
+interface Props {
+  image: Blob | Uint8Array | ArrayBuffer
+}
 const FormModal = ({handleModal}:Props) => {
  const [formValues, setFormValues] = useState<FormTypes>(InitialValues)
  const [values, setValues] = useState<FormTypes[]>([])
- const [imageUpload, setImageUpload] = useState(null)
+ const [imageUpload, setImageUpload] = useState<Props>()
  const [err, setErr] = useState<string>('')
  const {title, desc} = formValues
+ useEffect(()=>{
+  const uploadFile = () =>{
+    const storageRef = ref(storage, 'imageName')
+    const uploadImg = uploadBytesResumable(storageRef,imageUpload)
+  }
+  imageUpload && uploadFile()
+ },[imageUpload])
  const handleInputChange = (e:any) =>{
     const {name, value} = e.target
     setFormValues({...formValues, [name]:value})
