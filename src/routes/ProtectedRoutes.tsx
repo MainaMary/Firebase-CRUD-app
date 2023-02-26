@@ -1,0 +1,14 @@
+import React from 'react'
+import { Navigate } from 'react-router-dom'
+import { useAuthContext } from '../context/authContext'
+import { ChildrenProps } from '../utils/types'
+
+const ProtectedRoutes = ({children}:ChildrenProps) => {
+const {currentUser} = useAuthContext()
+const user =true
+  return (
+    <div>{ user ? children : <Navigate to="/login"/>}</div>
+  )
+}
+
+export default ProtectedRoutes
