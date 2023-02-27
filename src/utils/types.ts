@@ -11,7 +11,8 @@ export interface BtnProps {
     icon?: ReactNode;
     onClick?:(x:any)=>void;
     type?: "button" | "submit" | "reset";
-    children?: string | ReactNode
+    children?: string | ReactNode,
+    disabled?: boolean
 
 }
  export  interface initialStateType {
@@ -25,6 +26,7 @@ export interface BtnProps {
  export interface FormTypes {
     title: string;
     desc: string;
+    img?: string;
    
  }
  export interface ChildrenProps {
