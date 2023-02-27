@@ -1,4 +1,5 @@
 import React,{useState, useEffect} from 'react'
+import { useNavigate } from 'react-router-dom'
 import CustomInput from './CustomInput'
 import CustomLabel from './CustomLabel'
 import CustomButton from './CustomButton'
@@ -26,12 +27,52 @@ const FormModal = ({handleModal}:Props) => {
  const [formValues, setFormValues] = useState<FormTypes>(InitialValues)
  const [values, setValues] = useState<FormTypes[]>([])
  const [imageUpload, setImageUpload] = useState<Props>()
+ const [progress, setProgress] = useState<number>(0)
  const [err, setErr] = useState<string>('')
+ const navigate = useNavigate()
  const {title, desc} = formValues
  useEffect(()=>{
-  const uploadFile = () =>{
-    const storageRef = ref(storage, 'imageName')
-    const uploadImg = uploadBytesResumable(storageRef,imageUpload)
+  const uploadFile = async () =>{
+   
+    const storageRef = ref(storage, `images/${Date.now()}`)
+    try{
+      const uploadTask = uploadBytesResumable(storageRef, imageUpload)
+      uploadTask.on("state_changed",
+      (snapshot) => {
+        const progress =
+          Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setProgress(progress);
+        switch(snapshot.state){
+          case "paused":
+            console.log('paused upload')
+            break;
+          case "running":
+            console.log("uplaod is running")
+            break
+          default:
+            break
+
+
+        }
+      },
+      (error) => {
+        alert(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log(downloadURL,'download url');
+          
+          setFormValues((prev)=>({...prev, img:downloadURL}))
+          
+        });
+      }
+    );
+    }
+    catch(error:any){
+      console.log(error)
+    }
+   
+    console.log(formValues,'formValues')
   }
   imageUpload && uploadFile()
  },[imageUpload])
@@ -45,18 +86,20 @@ const FormModal = ({handleModal}:Props) => {
     }
  }
  const handleSubmit = async (e:any) =>{
-    e.preventDefault()
+     e.preventDefault() 
+    // const file = e.target[0]?.files[0].name
+
     if(title && desc){
        setValues([...values,{title,desc}])
     }
   try{
     const response = await addDoc(collection(db,"cities"),{
-      title,
-      desc,
+     ...formValues,
       timeStamp: serverTimestamp()
 
     })
     console.log(response);
+    navigate('/imageList')
     
   }
   catch(error:any){
@@ -80,6 +123,7 @@ const FormModal = ({handleModal}:Props) => {
         </div>
         <div className="my-4">
         <CustomLabel>Select image</CustomLabel>
+        <p>{progress}</p>
         <CustomInput type="file" required multiple name="image" onChange={(e:any)=>setImageUpload(e.target.files[0])} />
         </div>
         <div className="my-4">
