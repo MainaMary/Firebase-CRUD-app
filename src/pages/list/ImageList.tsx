@@ -3,6 +3,8 @@ import { getDocs, collection } from "firebase/firestore";
 import { doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { deleteDoc } from "firebase/firestore";
+import { setDoc } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
 
 interface Props {
   title: string;
@@ -26,6 +28,9 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
     } catch (error: any) {
       console.log(error);
     }
+  };
+  const handleEdit = async () => {
+    await updateDoc(doc(db, "todos"));
   };
   return (
     <div className="bg-white border border- shadow-md  w-full rounded-md px-3 text-center py-2">
