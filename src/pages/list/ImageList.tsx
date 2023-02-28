@@ -5,34 +5,51 @@ import { db } from "../../firebase";
 import { deleteDoc } from "firebase/firestore";
 import { setDoc } from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
+import { MsgProps } from "../../utils/types";
+import { FormProps } from "../../utils/types";
+import Modal from "../../components/Modal";
+import { useAuthContext } from "../../context/authContext";
 
-interface Props {
-  title: string;
-  desc: string;
-  img: string;
-  timeStamp: string;
-  id: string;
-}
 interface ItemProps {
-  item: Props;
+  item: FormProps;
   data: any;
   setData: (x: any) => void;
 }
 export const ImageCard = ({ item, data, setData }: ItemProps) => {
+  const [imgId, setImgId] = useState<string>('')
+  const [message, setMessage] = useState<MsgProps>({error: true, msg:""})
+  const [itemList, setItemList] = useState<FormProps>({
+    title: '',
+    desc: '',
+    img: '',
+    timeStamp: '',
+    id: ''
+  })
+  const {edit, setEdit, openModal, handleModal, setOpenModal} = useAuthContext()
   const { title, desc, img, timeStamp, id } = item;
   const handleDelete = async (id: string) => {
     try {
-      await deleteDoc(doc(db, "cities", id));
-      const filteredItems = data.filter((item: Props) => item.id !== id);
+      const imageDoc = doc(db, "cities", id)
+      await deleteDoc(imageDoc);
+      const filteredItems = data.filter((item: FormProps) => item.id !== id);
       setData(filteredItems);
     } catch (error: any) {
       console.log(error);
     }
   };
-  const handleEdit = async () => {
-    await updateDoc(doc(db, "todos"));
+  const handleEdit = async (item:FormProps) => {
+   
+   console.log(item,'handle Edit')
+    setEdit(true)
+     handleModal()
+    const imageDoc = doc(db,"cities", id)
+    
+    //await updateDoc(imageDoc,item);
   };
+  console.log(itemList,'itemss')
+ 
   return (
+    <>
     <div className="bg-white border border- shadow-md  w-full rounded-md px-3 text-center py-2">
       <div className="flex justify-center m-auto text-center">
         <img src={img} alt={title} className="w-[200px] text-center" />
@@ -42,10 +59,13 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
         <p>{desc}</p>
       </div>
       <div className="flex">
-        <button>Edit</button>
+        <button onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</button>
         <button onClick={() => handleDelete(id)}>Delete</button>
       </div>
     </div>
+   
+    </>
+    
   );
 };
 const ImageList = () => {
@@ -65,14 +85,52 @@ const ImageList = () => {
     };
     handleFetch();
   }, []);
-  console.log(data, "data model");
+ 
+  const {edit, setEdit, openModal, handleModal, itemList, setItemList} = useAuthContext()
+  const handleDelete = async (id: string) => {
+    try {
+      const imageDoc = doc(db, "cities", id)
+      await deleteDoc(imageDoc);
+      const filteredItems = data.filter((item: FormProps) => item.id !== id);
+      setData(filteredItems);
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+  const handleEdit = async (item:FormProps) => {
+   
+   console.log(item,'handle Edit')
+    setEdit(true)
+     handleModal()
+    const imageDoc = doc(db,"cities", item.id)
+    
+    //await updateDoc(imageDoc,item);
+  };
+  console.log(itemList,'list')
 
   return (
-    <div className="grid justify-items-stretch grid-cols-3 gap-20">
-      {data.map((item: Props) => (
-        <ImageCard key={item.id} item={item} data={data} setData={setData} />
+    <>
+     <div className="grid justify-items-stretch grid-cols-3 gap-20 pt-24">
+      {data.map((item: FormProps) => (
+        // <ImageCard key={item.id} item={item} data={data} setData={setData} />
+        <div key={item.id} className="bg-white border border- shadow-md  w-full rounded-md px-3 text-center py-2">
+        <div className="flex justify-center m-auto text-center">
+          <img src={item.img} alt={item.title} className="w-[200px] text-center" />
+        </div>
+        <div>
+          <p>{item.title}</p>
+          <p>{item.desc}</p>
+        </div>
+        <div className="flex">
+          <button onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</button>
+          <button onClick={() => handleDelete(item.id)}>Delete</button>
+        </div>
+      </div>
       ))}
     </div>
+    {openModal && edit && <Modal handleModal={handleModal} />}
+    </>
+   
   );
 };
 export default ImageList;
