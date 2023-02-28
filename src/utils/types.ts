@@ -33,3 +33,20 @@ export interface BtnProps {
     children: ReactNode
 }
 export const USER ="user"
+export interface MsgProps {
+    error: boolean;
+    msg: string;
+  }
+ export interface ImgProps {
+    image: Blob | Uint8Array | ArrayBuffer;
+  }
+  export interface ModalProps {
+    handleModal: () => void;
+  }
+  export interface FormProps {
+    title: string;
+    desc: string;
+    img: string;
+    timeStamp: string;
+    id: string;
+  }
