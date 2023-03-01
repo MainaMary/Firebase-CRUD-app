@@ -4,10 +4,10 @@ import { useAuthContext } from '../context/authContext'
 import { ChildrenProps } from '../utils/types'
 
 const ProtectedRoutes = ({children}:ChildrenProps) => {
-const {currentUser} = useAuthContext()
-const user =true
+const {state} = useAuthContext()
+
   return (
-    <div>{ user ? children : <Navigate to="/login"/>}</div>
+    <div>{ state?.accessToken ? children : <Navigate to="/login"/>}</div>
   )
 }
 
