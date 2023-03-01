@@ -6,11 +6,12 @@ import {
   useReducer,
 } from "react";
 import { AuthReducer } from "../reducer/authReducer";
-import { ChildrenProps, ImgProps } from "../utils/types";
+import { ChildrenProps } from "../utils/types";
 import { USER, FormProps } from "../utils/types";
+import { InitialValues } from "../utils/tools";
 
 const initialState = {
-  currentUser: JSON.parse(localStorage.getItem(USER) || null),
+  currentUser: JSON.parse(localStorage.getItem('currentUser') || '{}')
   
 };
 const initialFormState = {
@@ -21,7 +22,7 @@ const initialFormState = {
     id: "",
   };
 const initialContext = {
-  state: { currentUser: {} | 0 },
+  state:InitialValues,
   dispatchUser: () => null,
   edit: false,
   setEdit: () => null,
@@ -35,7 +36,7 @@ const initialContext = {
 
 
 const AuthContext = createContext<{
-  state: { currentUser: {} } | { currentUser: null };
+  state: any,
   dispatchUser: React.Dispatch<any>;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   edit: boolean;
@@ -55,10 +56,10 @@ const AuthContextProvider = ({ children }: ChildrenProps) => {
   const [edit, setEdit] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [itemList, setItemList] = useState<FormProps>(initialFormState);
-  const [image, setImage] = useState<ImgProps>()
-  console.log(openModal, "hook");
+  
   const handleModal = () => {
     setOpenModal((prev) => !prev);
+
   };
   useEffect(() => {
     if (state.currentUser) {
@@ -66,7 +67,7 @@ const AuthContextProvider = ({ children }: ChildrenProps) => {
     }
   }, [state.currentUser]);
   const value = {
-    state: state,
+    state:state.currentUser,
     dispatchUser: dispatch,
     edit,
     setEdit,
