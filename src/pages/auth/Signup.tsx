@@ -44,7 +44,6 @@ const SignUp = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const { visible, handleVisisble } = useVisibleHook();
-  const { dispatchUser} = useAuthContext()
   const googleProvider = new GoogleAuthProvider();
   const navigate = useNavigate();
 
