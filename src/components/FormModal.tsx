@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 import CustomInput from "./CustomInput";
 import CustomLabel from "./CustomLabel";
 import CustomButton from "./CustomButton";
-import { FormTypes, MsgProps , ImgProps, ModalProps} from "../utils/types";
+import { FormTypes, MsgProps, ImgProps, ModalProps } from "../utils/types";
 import { InitialValues } from "../utils/tools";
 import { addDoc, serverTimestamp } from "firebase/firestore";
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { collection } from "firebase/firestore";
 import { db } from "../firebase";
 import { storage } from "../firebase";
-import { async } from "@firebase/util";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref } from "firebase/storage";
 import Alert from "./Alert";
-
+import { useAuthContext } from "../context/authContext";
+import { doc } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
 
 const FormModal = ({ handleModal }: ModalProps) => {
   const [formValues, setFormValues] = useState<FormTypes>(InitialValues);
@@ -21,6 +22,7 @@ const FormModal = ({ handleModal }: ModalProps) => {
   const [imageUpload, setImageUpload] = useState<ImgProps>();
   const [progress, setProgress] = useState<number>(0);
   const [message, setMessage] = useState<MsgProps>({ error: false, msg: "" });
+  const { itemList, setItemList } = useAuthContext();
   const navigate = useNavigate();
 
   const { title, desc } = formValues;
@@ -61,11 +63,14 @@ const FormModal = ({ handleModal }: ModalProps) => {
       } catch (error: any) {
         console.log(error);
       }
-
-    
     };
     imageUpload && uploadFile();
   }, [imageUpload]);
+  useEffect(() => {
+    if (itemList) {
+      setFormValues(itemList);
+    }
+  }, [itemList.id]);
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
@@ -78,16 +83,22 @@ const FormModal = ({ handleModal }: ModalProps) => {
       setValues([...values, { title, desc }]);
     }
     try {
-      const response = await addDoc(collection(db, "cities"), {
-        ...formValues,
-        timeStamp: serverTimestamp(),
-      });
-      setMessage({ error: true, msg: "Successfuly created" });
-    
-      setTimeout(() => {
-        navigate("/imageList");
-        handleModal();
-      }, 2000);
+      if(itemList.id){
+    const docRef = doc(db, "cities", itemList.id);
+    const res = updateDoc(docRef,{...itemList})
+      } else{
+        const response = await addDoc(collection(db, "cities"), {
+          ...formValues,
+          timeStamp: serverTimestamp(),
+        });
+       
+      }
+      setMessage({ error: true, msg: itemList.id ? "Updated successfully":"Successfuly created" });
+  
+        setTimeout(() => {
+          navigate("/imageList");
+          handleModal();
+        }, 2000);
     } catch (error: any) {
       console.log(error);
       setMessage({ error: true, msg: error?.message });
@@ -95,7 +106,7 @@ const FormModal = ({ handleModal }: ModalProps) => {
   };
   return (
     <form
-      className=" w-full md:w-1/2 rounded-md shadow-md bg-white px-8 py-4"
+      className=" w-full md:w-1/2 rounded-md shadow-md bg-white z-40 px-8 py-4"
       onSubmit={handleSubmit}
     >
       {message.error && (
@@ -105,7 +116,7 @@ const FormModal = ({ handleModal }: ModalProps) => {
         />
       )}
 
-      <h2>Add image</h2>
+      <h2>{itemList.id ? "Edit" : "Upload image"}</h2>
       <div className="my-4">
         <CustomLabel>Title</CustomLabel>
         <CustomInput
@@ -116,17 +127,19 @@ const FormModal = ({ handleModal }: ModalProps) => {
           value={title}
         />
       </div>
-      <div className="my-4">
-        <CustomLabel>Select image</CustomLabel>
-        <p>{progress}</p>
-        <CustomInput
-          type="file"
-          required
-          multiple
-          name="image"
-          onChange={(e: any) => setImageUpload(e.target.files[0])}
-        />
-      </div>
+      {!itemList.id && (
+        <div className="my-4">
+          <CustomLabel>Select image</CustomLabel>
+          <p>{progress}</p>
+          <CustomInput
+            type="file"
+            required
+            multiple
+            name="image"
+            onChange={(e: any) => setImageUpload(e.target.files[0])}
+          />
+        </div>
+      )}
       <div className="my-4">
         <CustomLabel>Description</CustomLabel>
         <CustomInput
@@ -138,8 +151,16 @@ const FormModal = ({ handleModal }: ModalProps) => {
         />
       </div>
       <div className="flex justify-between my-4">
-        <CustomButton type="submit">Submit</CustomButton>
-        <CustomButton onClick={handleModal}>Cancel</CustomButton>
+        <CustomButton type="submit">
+          {itemList.id ? "Edit" : "Submit"}
+        </CustomButton>
+        <CustomButton
+          onClick={() => {
+            handleModal(), setItemList(InitialValues);
+          }}
+        >
+          Cancel
+        </CustomButton>
       </div>
     </form>
   );
