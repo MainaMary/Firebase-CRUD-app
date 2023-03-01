@@ -3,12 +3,10 @@ import { getDocs, collection } from "firebase/firestore";
 import { doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { deleteDoc } from "firebase/firestore";
-import { setDoc } from "firebase/firestore";
-import { updateDoc } from "firebase/firestore";
-import { MsgProps } from "../../utils/types";
 import { FormProps } from "../../utils/types";
 import Modal from "../../components/Modal";
 import { useAuthContext } from "../../context/authContext";
+import CustomButton from "../../components/CustomButton";
 
 interface ItemProps {
   item: FormProps;
@@ -16,8 +14,6 @@ interface ItemProps {
   setData: (x: any) => void;
 }
 export const ImageCard = ({ item, data, setData }: ItemProps) => {
-  const [imgId, setImgId] = useState<string>('')
-  const [message, setMessage] = useState<MsgProps>({error: true, msg:""})
   const [itemList, setItemList] = useState<FormProps>({
     title: '',
     desc: '',
@@ -25,7 +21,7 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
     timeStamp: '',
     id: ''
   })
-  const {edit, setEdit, openModal, handleModal, setOpenModal} = useAuthContext()
+  const { setEdit,handleModal,} = useAuthContext()
   const { title, desc, img, timeStamp, id } = item;
   const handleDelete = async (id: string) => {
     try {
@@ -51,8 +47,8 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
   return (
     <>
     <div className="bg-white border border- shadow-md  w-full rounded-md px-3 text-center py-2">
-      <div className="flex justify-center m-auto text-center">
-        <img src={img} alt={title} className="w-[200px] text-center" />
+      <div className="flex justify-center m-auto h-[250px] text-center">
+        <img src={img} alt={title} className="h-auto text-center" />
       </div>
       <div>
         <p>{title}</p>
@@ -69,6 +65,7 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
   );
 };
 const ImageList = () => {
+  const { openModal, handleModal, itemList, setItemList} = useAuthContext()
   const [data, setData] = useState([]);
   useEffect(() => {
     const handleFetch = async () => {
@@ -86,7 +83,7 @@ const ImageList = () => {
     handleFetch();
   }, []);
  
-  const {edit, setEdit, openModal, handleModal, itemList, setItemList} = useAuthContext()
+ 
   const handleDelete = async (id: string) => {
     try {
       const imageDoc = doc(db, "cities", id)
@@ -100,7 +97,7 @@ const ImageList = () => {
   const handleEdit = async (item:FormProps) => {
    
    console.log(item,'handle Edit')
-    setEdit(true)
+    //setEdit(true)
      handleModal()
     const imageDoc = doc(db,"cities", item.id)
     
@@ -110,25 +107,25 @@ const ImageList = () => {
 
   return (
     <>
-     <div className="grid justify-items-stretch grid-cols-3 gap-20 pt-24">
+     <div className="grid justify-items-stretch grid-cols-1 md:grid-cols-4 gap-12 pt-24">
       {data.map((item: FormProps) => (
         // <ImageCard key={item.id} item={item} data={data} setData={setData} />
-        <div key={item.id} className="bg-white border border- shadow-md  w-full rounded-md px-3 text-center py-2">
-        <div className="flex justify-center m-auto text-center">
-          <img src={item.img} alt={item.title} className="w-[200px] text-center" />
+        <div key={item.id} className="border-solid border-2  border-gray-300   w-full rounded-md px-3  py-4">
+        <div className="flex justify-center m-auto text-center px-3">
+          <img src={item.img} alt={item.title} className=" shadow-lg w-[300px] h-[150px] text-center" />
         </div>
-        <div>
-          <p>{item.title}</p>
+        <div className="my-4">
+          <p className="text-xl text-[#200E32]">{item.title}</p>
           <p>{item.desc}</p>
         </div>
-        <div className="flex">
-          <button onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</button>
-          <button onClick={() => handleDelete(item.id)}>Delete</button>
+        <div className="flex justify-between">
+          <CustomButton className="border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32] " onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</CustomButton>
+          <CustomButton className="border-solid border-2 bg-transparent border-red-700 text-red-700 hover:text-white" onClick={() => handleDelete(item.id)}>Delete</CustomButton>
         </div>
       </div>
       ))}
     </div>
-    {openModal && edit && <Modal handleModal={handleModal} />}
+    {openModal && <Modal handleModal={handleModal} />}
     </>
    
   );
