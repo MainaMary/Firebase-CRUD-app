@@ -16,6 +16,7 @@ import CustomButton from "../../components/CustomButton";
 import { validateEmail } from "../../utils/tools";
 import { formReducer } from "../../reducer/formReducer";
 import { useAuthContext } from "../../context/authContext";
+import Title from "../../components/Title";
 
 interface ErrorTypes {
   pswdErr: string;
@@ -124,6 +125,7 @@ const SignUp = () => {
         delete stateClone["password"];
         stateClone.timeStamp = serverTimestamp();
         console.log(stateClone, "state clone");
+        console.log(userCredential,'usercredential')
         const docRef = doc(db, "users", userCredential?.user?.uid);
         const saveTodb = await setDoc(docRef, stateClone);
         console.log(saveTodb, "response");
@@ -156,9 +158,11 @@ const SignUp = () => {
     }
   };
   return (
-    <div>
-      <form onSubmit={handleSubmit} className="w-full">
+    <div className='w-[50%] shadow-lg rounded-2xl px-8 flex m-auto bg-white py-3 items-center justify-center h-auto mt-12'>
+     <div className="w-full">
+     <form onSubmit={handleSubmit} className="w-full">
         <p>{error}</p>
+        <Title>Signup</Title>
         <div className="my-4">
           <CustomLabel>Name</CustomLabel>
           <CustomInput
@@ -221,6 +225,7 @@ const SignUp = () => {
           <p className="ml-4">Continue with Google</p>
         </CustomButton>
       </form>
+     </div>
     </div>
   );
 };

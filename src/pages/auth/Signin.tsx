@@ -1,5 +1,5 @@
 import React,{useState, useReducer} from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {AiFillEyeInvisible,AiFillEye} from "react-icons/ai"
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import CustomInput from '../../components/CustomInput'
@@ -10,6 +10,7 @@ import { ActionTypes } from '../../utils/types'
 import useVisibleHook from '../../hooks/useVisibleHook'
 import { formReducer } from '../../reducer/formReducer'
 import { useAuthContext } from '../../context/authContext'
+import Title from '../../components/Title'
 const Signin = () => {
   const initialState = {
     email: '',
@@ -19,7 +20,8 @@ const Signin = () => {
   const {visible, handleVisisble} = useVisibleHook()
   const [loading, setLoading] = useState<boolean>(false)
   const [error,setError] = useState<string>('')
-  const {dispatchUser} = useAuthContext()
+  const {dispatchUser, handleModal} = useAuthContext()
+  const navigate = useNavigate()
   const handleInputChange= (event:any)=>{
     const {name, value} = event.target
     dispatch({
@@ -38,7 +40,8 @@ const Signin = () => {
       if ( password && email) {
        const userCredential = await signInWithEmailAndPassword(auth, email, password);
        dispatchUser({type:ActionTypes.login, payload: userCredential?.user})
-       // navigate("/login");
+       navigate("/imageList");
+       handleModal()
       }
 
       setLoading(true);
@@ -49,11 +52,12 @@ const Signin = () => {
    }
   }
   return (
-    <div>
+    <div className='w-[50%] shadow-lg rounded-2xl flex m-auto bg-white px-8 py-3 items-center justify-center h-auto mt-12'>
     <form className='w-full' onSubmit={handleSubmit}>
+      <Title>Login</Title>
       <div className='my-4'>
         <CustomLabel>Email</CustomLabel>
-        <CustomInput placeholder="John Doe" name="name" onChange={handleInputChange} type="text" value={email || ''}/>
+        <CustomInput placeholder="John Doe" name="email" onChange={handleInputChange} type="text" value={email || ''}/>
       </div>
       <div className="my-4">
         <CustomLabel>Password</CustomLabel>
