@@ -12,7 +12,8 @@ export interface BtnProps {
     onClick?:(x:any)=>void;
     type?: "button" | "submit" | "reset";
     children?: string | ReactNode,
-    disabled?: boolean
+    disabled?: boolean;
+    className?: string;
 
 }
  export  interface initialStateType {

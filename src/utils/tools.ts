@@ -8,4 +8,7 @@ export const validateEmail = (email: string) => {
   export const InitialValues = {
     title: "",
     desc: "",
+    img: "",
+    timeStamp: "",
+    id: "",
   };
