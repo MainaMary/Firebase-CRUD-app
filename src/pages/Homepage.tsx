@@ -19,9 +19,12 @@ const Homepage = () => {
    }
   return (
     <div>
-      <div className="flex h-auto items-center justify-between w-full">
-        <div className="w-1/2">
-          <p className="text-[#200E32] text-5xl leading-[54px] font-medium">
+      <div className="block md:flex h-auto items-center justify-between w-full">
+      <div className="w-full md:w-1/2 block md:hidden">
+          <img src={Img} alt="gallery" />
+        </div>
+        <div className="w-full text-center md:text-start md:w-1/2">
+          <p className="text-[#200E32] text-3xl   md:text-5xl leading-[54px] font-medium">
             Explore the World Through <br/> Our Lens. A Visual Journey of Captivating
             Moments
           </p>
@@ -36,7 +39,7 @@ const Homepage = () => {
           </p>
           <CustomButton onClick={isUserLoggedIn}>Upload image</CustomButton>
         </div>
-        <div className="w-1/2">
+        <div className="w-1/2 hidden md:block">
           <img src={Img} alt="gallery" />
         </div>
       </div>
