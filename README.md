@@ -4,7 +4,7 @@
 3. To start the project run yarn run dev
 
 ### How to install  the firebase package to this project
- npm install firebase
+ yarn add firebase
  
 Open http://localhost:5173 with your browser to see the result.
 
