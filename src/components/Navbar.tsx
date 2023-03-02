@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
 import {BsImage} from "react-icons/bs"
 import CustomButton from "./CustomButton";
 import { useNavigate } from "react-router-dom";
@@ -10,12 +12,24 @@ import { FaUserAlt } from "react-icons/fa";
 
 const Navbar = () => {
   const [userTooltip, setUserToolTip] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false)
   const navigate = useNavigate();
   const { openModal, handleModal, state } = useAuthContext();
   console.log(state?.displayName, state?.accessToken, "state");
   const handleTooltip = () => {
     setUserToolTip((prev) => !prev);
   };
+  const handleMenu = () =>{
+    setOpen(prev => !prev)
+  }
+  const handleLogout = async () =>{
+    try{
+      await signOut(auth)
+    }
+    catch(error:any){
+     console.log(error?.message)
+    }
+  }
   return (
     <nav className="h-24 flex  w-full justify-between items-center">
       <div onClick={() => navigate("/")} className="font-bold text-4xl h-auto items-center  text-[#200E32] cursor-pointer flex talic">
@@ -23,7 +37,7 @@ const Navbar = () => {
       <BsImage/>
       </div>
       
-      <div >
+      <div className={open ?  "fixed w-[60%] top-0 left-0": "hidden md:block"} >
         {state?.accessToken ? (
           <div className="flex h-auto items-center">
             <div>
@@ -36,13 +50,13 @@ const Navbar = () => {
                   <p>
                   {state?.displayName}
                   </p>
-                  <CustomButton className="border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32] ">Logout</CustomButton>
+                  <CustomButton onClick={handleLogout} className="border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32] ">Logout</CustomButton>
                 </div>
               )}
             </div>
           </div>
         ) : (
-          <div className="flex">
+          <div className={open ? "block mt-12 px-4" :"flex"}>
             <CustomButton onClick={() => navigate("/login")}>
               Sign in
             </CustomButton>
@@ -52,7 +66,9 @@ const Navbar = () => {
           </div>
         )}
       </div>
-
+      <div className="block md:hidden" onClick={handleMenu}>
+        {open ? <AiOutlineClose/> :<FiMenu />}
+      </div>
       {openModal && <Modal openModal={openModal} handleModal={handleModal} />}
     </nav>
   );
