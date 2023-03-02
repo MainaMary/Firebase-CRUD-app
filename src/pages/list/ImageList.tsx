@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getDocs, collection } from "firebase/firestore";
-import { doc } from "firebase/firestore";
+import { getDocs,deleteDoc, doc , collection } from "firebase/firestore";
 import { db } from "../../firebase";
-import { deleteDoc } from "firebase/firestore";
 import { FormProps } from "../../utils/types";
 import Modal from "../../components/Modal";
 import { useAuthContext } from "../../context/authContext";

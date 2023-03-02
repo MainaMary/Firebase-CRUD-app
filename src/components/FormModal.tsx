@@ -5,16 +5,12 @@ import CustomLabel from "./CustomLabel";
 import CustomButton from "./CustomButton";
 import { FormTypes, MsgProps, ImgProps, ModalProps } from "../utils/types";
 import { InitialValues } from "../utils/tools";
-import { addDoc, serverTimestamp } from "firebase/firestore";
-import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { collection } from "firebase/firestore";
-import { db } from "../firebase";
-import { storage } from "../firebase";
-import { ref } from "firebase/storage";
+import { addDoc,updateDoc, collection, doc, serverTimestamp } from "firebase/firestore";
+import { getDownloadURL, uploadBytesResumable, ref } from "firebase/storage";
+import { storage ,db} from "../firebase";
 import Alert from "./Alert";
 import { useAuthContext } from "../context/authContext";
-import { doc } from "firebase/firestore";
-import { updateDoc } from "firebase/firestore";
+
 
 const FormModal = ({ handleModal }: ModalProps) => {
   const [formValues, setFormValues] = useState<FormTypes>(InitialValues);
