@@ -157,7 +157,7 @@ const SignUp = () => {
     }
   };
   return (
-    <div className='w-[50%] shadow-lg rounded-2xl px-8 flex m-auto bg-white py-3 items-center justify-center h-auto mt-12'>
+    <div className='w-ful md:w-[50%] shadow-lg rounded-2xl px-8 flex m-auto bg-white py-3 items-center justify-center h-auto mt-12'>
      <div className="w-full">
      <form onSubmit={handleSubmit} className="w-full">
         <p>{error}</p>
@@ -202,7 +202,7 @@ const SignUp = () => {
         <div className="my-4 block  md:flex justify-between">
           <p>
             Have an account?{" "}
-            <span className="text-primary-color">
+            <span className="text-[#200E32] font-semibold">
               <Link to="/login">Sign in</Link>
             </span>
           </p>
