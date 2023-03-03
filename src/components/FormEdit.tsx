@@ -25,7 +25,7 @@ const FormEdit = () => {
         id: "",
       };
 const [formValues, setFormValues] = useState<any>(itemList);
-const [imageUpload, setImageUpload] = useState<ImgProps>();
+const [imageUpload, setImageUpload] = useState<any>();
 const [message,setMessage] = useState<MsgProps>({error:true, msg:""})
 
 const {title, desc} = formValues

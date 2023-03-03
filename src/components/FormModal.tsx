@@ -15,7 +15,7 @@ import { useAuthContext } from "../context/authContext";
 const FormModal = ({ handleModal }: ModalProps) => {
   const [formValues, setFormValues] = useState<FormTypes>(InitialValues);
   const [values, setValues] = useState<FormTypes[]>([]);
-  const [imageUpload, setImageUpload] = useState<ImgProps>();
+  const [imageUpload, setImageUpload] = useState<any>();
   const [progress, setProgress] = useState<number>(0);
   const [message, setMessage] = useState<MsgProps>({ error: false, msg: "" });
   const { itemList, setItemList } = useAuthContext();
