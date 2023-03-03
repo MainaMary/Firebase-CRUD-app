@@ -28,7 +28,7 @@ const Homepage = () => {
             Explore the World Through <br/> Our Lens. A Visual Journey of Captivating
             Moments
           </p>
-          <p className="my-12 text-lg ">
+          <p className="my-12 text-lg w-[70%]">
             Welcome to our image gallery, where stunning visuals and captivating
             moments come together in one place.<br/> 
             <span className="mt-4">

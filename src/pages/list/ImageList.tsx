@@ -83,6 +83,7 @@ const ImageList = () => {
  
  
   const handleDelete = async (id: string) => {
+    console.log('deleted item')
     try {
       const imageDoc = doc(db, "cities", id)
       await deleteDoc(imageDoc);
@@ -117,8 +118,8 @@ const ImageList = () => {
           <p>{item.desc}</p>
         </div>
         <div className="flex justify-between">
-          <CustomButton className="border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32] " onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</CustomButton>
-          <CustomButton className="border-solid border-2 bg-transparent border-red-700 text-red-700 hover:text-white" onClick={() => handleDelete(item.id)}>Delete</CustomButton>
+          <button className="  cursor-pointer rounded-lg px-5 py-2.5 mr-2 mb-2 border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32]" onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</button>
+          <button className=" cursor-pointer rounded-lg px-5 py-2.5 mr-2 mb-2 border-solid border-2 bg-transparent border-red-700 text-red-700" onClick={() => handleDelete(item.id)}>Delete</button>
         </div>
       </div>
       ))}
