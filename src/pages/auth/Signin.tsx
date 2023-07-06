@@ -1,5 +1,6 @@
-import React,{useState, useReducer} from 'react'
+import React,{useState, useReducer, useEffect} from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import {AiFillEyeInvisible,AiFillEye} from "react-icons/ai"
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import CustomInput from '../../components/CustomInput'
@@ -71,6 +72,15 @@ const Signin = () => {
   const handleForgotPassword = () =>{
   setPswdModal(prev => !prev)
   }
+  useEffect(()=>{
+    if(isSuccess){
+    
+     toast.success('Log in succesfully')
+     
+     navigate("/groups");
+     window.location.reload()
+    }
+   },[isSuccess])
   return (
     <>
     <div className='w-full md:w-[50%] shadow-lg rounded-2xl flex m-auto bg-white px-8 py-3 items-center justify-center h-auto mt-12'>
