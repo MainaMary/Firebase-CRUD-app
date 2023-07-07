@@ -24,7 +24,7 @@ const Signin = () => {
   const {visible, handleVisisble} = useVisibleHook()
   const [loading, setLoading] = useState<boolean>(false)
   const [error,setError] = useState<string>('')
-  const {dispatchUser, handleModal} = useAuthContext()
+  const {dispatchUser, handleModal, state:user} = useAuthContext()
   const [pswdModal, setPswdModal] = useState<boolean>(false)
   const navigate = useNavigate()
   const handleInputChange= (event:any)=>{
@@ -50,7 +50,7 @@ const Signin = () => {
       if ( password && email) {
        const userCredential = await signInWithEmailAndPassword(auth, email, password);
        dispatchUser({type:ActionTypes.login, payload: userCredential?.user})
-       navigate("/imageList");
+      
        handleModal()
       }
 
@@ -73,14 +73,13 @@ const Signin = () => {
   setPswdModal(prev => !prev)
   }
   useEffect(()=>{
-    if(isSuccess){
+    if(user.currentUser){
     
      toast.success('Log in succesfully')
      
-     navigate("/groups");
-     window.location.reload()
+     navigate("/imageList");
     }
-   },[isSuccess])
+   },[user.currentUser])
   return (
     <>
     <div className='w-full md:w-[50%] shadow-lg rounded-2xl flex m-auto bg-white px-8 py-3 items-center justify-center h-auto mt-12'>
