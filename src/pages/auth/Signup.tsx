@@ -16,6 +16,7 @@ import CustomButton from "../../components/CustomButton";
 import { validateEmail } from "../../utils/tools";
 import { formReducer } from "../../reducer/formReducer";
 import { useAuthContext } from "../../context/authContext";
+import { toast } from "react-toastify";
 import Title from "../../components/Title";
 
 interface ErrorTypes {
@@ -42,6 +43,7 @@ const SignUp = () => {
     name: "",
     email: "",
   });
+  const {state:user} = useAuthContext()
   const [loading, setLoading] = useState<boolean>(false);
   const { visible, handleVisisble } = useVisibleHook();
   const googleProvider = new GoogleAuthProvider();
@@ -156,6 +158,14 @@ const SignUp = () => {
       console.log(error.message);
     }
   };
+  useEffect(()=>{
+    if(user.currentUser){
+    
+     toast.success('Log in succesfully')
+     
+     navigate("/imageList");
+    }
+   },[user.currentUser])
   return (
     <div className='w-ful md:w-[50%] shadow-lg rounded-2xl px-8 flex m-auto bg-white py-3 items-center justify-center h-auto mt-12'>
      <div className="w-full">
