@@ -162,8 +162,7 @@ const SignUp = () => {
     if(user.currentUser){
     
      toast.success('Log in succesfully')
-     
-     navigate("/imageList");
+     navigate("/login");
     }
    },[user.currentUser])
   return (
