@@ -154,6 +154,7 @@ const SignUp = () => {
       console.log(user, "google response");
       const docRef = doc(db, "users", user?.uid)
       const docSnap = await getDoc(docRef)
+      console.log(docSnap)
     } catch (error: any) {
       console.log(error.message);
     }
