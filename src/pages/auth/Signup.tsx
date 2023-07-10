@@ -142,7 +142,7 @@ const SignUp = () => {
       if (error.message.includes("email-already-in-use")) {
         setTimeout(() => {
           setError("Email already exist");
-        }, 100);
+        }, 200);
       }
     }
     setLoading(false);
