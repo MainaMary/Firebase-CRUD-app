@@ -152,6 +152,9 @@ const SignUp = () => {
     try {
       const { user } = await signInWithPopup(auth, googleProvider);
       console.log(user, "google response");
+      if(user){
+        navigate('/')
+      }
       const docRef = doc(db, "users", user?.uid)
       const docSnap = await getDoc(docRef)
       console.log(docSnap)
