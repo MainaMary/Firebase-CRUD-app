@@ -28,6 +28,7 @@ export interface BtnProps {
     title: string;
     desc: string;
     img?: string;
+    id?: string
    
  }
  export interface ChildrenProps {
