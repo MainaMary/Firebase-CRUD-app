@@ -51,6 +51,7 @@ const SignUp = () => {
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
+    setError('')
     dispatch({
       type: ActionTypes.textInput,
       payload: { key: [name], value: value },
@@ -108,6 +109,10 @@ const SignUp = () => {
     setFormErrors(handleValidation());
     if (!name || !email || !password) {
       setError("Please provide all details");
+    }
+    console.log(password.length)
+    if(password && password.length < 6){
+      setError("Password should be atleast 6 characters")
     }
     setLoading(true);
     try {
@@ -173,8 +178,9 @@ const SignUp = () => {
     <div className='w-ful md:w-[50%] shadow-lg rounded-2xl px-8 flex m-auto bg-white py-3 items-center justify-center h-auto mt-12'>
      <div className="w-full">
      <form onSubmit={handleSubmit} className="w-full">
-        <p>{error}</p>
+       
         <Title>Signup</Title>
+        <p className="text-red-500">{error}</p>
         <div className="my-4">
           <CustomLabel>Name</CustomLabel>
           <CustomInput

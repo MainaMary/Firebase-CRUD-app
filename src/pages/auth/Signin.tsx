@@ -29,6 +29,7 @@ const Signin = () => {
   const navigate = useNavigate()
   const handleInputChange= (event:any)=>{
     const {name, value} = event.target
+    setError('')
     dispatch({
       type: ActionTypes.textInput,
       payload: { key: [name], value: value },
@@ -40,6 +41,7 @@ const Signin = () => {
     if (!email || !password) {
       setError("Please provide all details");
     }
+    
     if (email && !validateEmail(email)) {
       setError('Please use a valid email address')
     
@@ -50,8 +52,8 @@ const Signin = () => {
       if ( password && email) {
        const userCredential = await signInWithEmailAndPassword(auth, email, password);
        dispatchUser({type:ActionTypes.login, payload: userCredential?.user})
-      
-       handleModal()
+       navigate("/imageList")
+      //  handleModal()
       }
 
       setLoading(false);
@@ -63,7 +65,7 @@ const Signin = () => {
       setError('Email does not exist')
     }
     if(error.message.includes('auth/wrong-password')){
-      setError('Please provide valid password')
+      setError('Please provide a valid password')
     }
     setLoading(false);
    }
@@ -74,7 +76,7 @@ const Signin = () => {
   }
   useEffect(()=>{
     if(user.currentUser){
-    
+    console.log(user.currentUser)
      toast.success('Log in succesfully')
      
      navigate("/imageList");
