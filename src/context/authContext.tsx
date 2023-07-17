@@ -62,6 +62,7 @@ const AuthContextProvider = ({ children }: ChildrenProps) => {
 
   };
   useEffect(() => {
+    console.log({currentUser: state.currentUser})
     if (state.currentUser) {
       localStorage.setItem(USER, JSON.stringify(state.currentUser));
     }

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import RootLayout from "../layout/RootLayout";
+import ProtectedRoutes from "./ProtectedRoutes";
 const Homepage = React.lazy(() => import('../pages/Homepage'))
 const Signin  = React.lazy(() => import('../pages/auth/Signin'))
 const Signup = React.lazy(() =>import('../pages/auth/Signup'))
@@ -22,7 +23,7 @@ export const routes = createBrowserRouter(
       <Route index element={<Homepage />} />
       <Route path={SIGNIN} element={<Signin />} />
       <Route path={REGISTER} element={<Signup />} />
-      <Route path={LIST} element={<ImageList/>}/>
+      <Route path={LIST} element={<ProtectedRoutes> <ImageList/> </ProtectedRoutes>} />
       <Route path={NOTFOUND} element={<NotFound/>}/>
       <Route />
     </Route>

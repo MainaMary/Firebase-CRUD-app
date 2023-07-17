@@ -39,7 +39,7 @@ const FormModal = ({ handleModal }: ModalProps) => {
                 console.log("paused upload");
                 break;
               case "running":
-                console.log("uplaod is running");
+                console.log("upload is running");
                 break;
               default:
                 break;
@@ -86,6 +86,7 @@ const FormModal = ({ handleModal }: ModalProps) => {
         const response = await addDoc(collection(db, "cities"), {
           ...formValues,
           timeStamp: serverTimestamp(),
+           id:Date.now().toString()
         });
        
       }
