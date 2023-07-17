@@ -15,7 +15,6 @@ const Navbar = () => {
   const [open, setOpen] = useState<boolean>(false)
   const navigate = useNavigate();
   const { openModal, handleModal, state } = useAuthContext();
-  console.log(state?.displayName, state?.accessToken, "state");
   const handleTooltip = () => {
     setUserToolTip((prev) => !prev);
   };
@@ -24,7 +23,9 @@ const Navbar = () => {
   }
   const handleLogout = async () =>{
     try{
-      await signOut(auth)
+     const user = await signOut(auth)
+     console.log(user,'logout')
+     navigate('/login')
     }
     catch(error:any){
      console.log(error?.message)
@@ -38,19 +39,19 @@ const Navbar = () => {
       </div>
       
       <div className={open ?  "fixed w-[60%] top-0 left-0": "hidden md:block"} >
-        {state?.accessToken ? (
+        {state ? (
           <div className="flex h-auto items-center">
             <div>
               <CustomButton onClick={handleModal} >Upload image</CustomButton>
             </div>
             <div>
-              <FaUserAlt onClick={handleTooltip} />
+              <FaUserAlt onClick={handleTooltip} size={25} />
               {userTooltip && (
-                <div className="shadow-md rounded-sm w-1/2 px-3 py-2">
+                <div className="absolute shadow-md rounded-sm w-full px-3 py-2">
                   <p>
                   {state?.displayName}
                   </p>
-                  <CustomButton onClick={handleLogout} className="border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32] ">Logout</CustomButton>
+                  <CustomButton onClick={handleLogout} >Logout</CustomButton>
                 </div>
               )}
             </div>
