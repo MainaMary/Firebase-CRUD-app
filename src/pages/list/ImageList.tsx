@@ -84,6 +84,7 @@ const ImageList = () => {
  
   const handleDelete = async (id: string) => {
     console.log('deleted item')
+    console.log({id})
     try {
       const imageDoc = doc(db, "cities", id)
       await deleteDoc(imageDoc);
@@ -102,14 +103,14 @@ const ImageList = () => {
     
     //await updateDoc(imageDoc,item);
   };
-  console.log(itemList,'list')
-
+ 
+ console.log({data})
   return (
     <>
      <div className="grid justify-items-stretch grid-cols-1 md:grid-cols-4 gap-12 pt-24">
-      {data.map((item: FormProps) => (
+      {data.map((item: FormProps,index:number) => (
         // <ImageCard key={item.id} item={item} data={data} setData={setData} />
-        <div key={item.id} className="border-solid border-2  border-gray-300   w-full rounded-md px-3  py-4">
+        <div key={index} className="border-solid border-2  border-gray-300   w-full rounded-md px-3  py-4">
         <div className="flex justify-center m-auto text-center px-3">
           <img src={item.img} alt={item.title} className=" shadow-lg w-[300px] h-[150px] text-center" />
         </div>
