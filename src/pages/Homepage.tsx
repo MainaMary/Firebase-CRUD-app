@@ -10,7 +10,7 @@ const Homepage = () => {
 
    const isUserLoggedIn = () =>{
     let checker
-    if(state?.accessToken){
+    if(state){
      checker = handleModal()
     }else {
      checker = navigate('/login')
