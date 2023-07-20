@@ -9,6 +9,7 @@ import { useAuthContext } from "../context/authContext";
 import { FiMenu } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaUserAlt } from "react-icons/fa";
+import { USER } from "../utils/types";
 
 const Navbar = () => {
   const [userTooltip, setUserToolTip] = useState<boolean>(false);
@@ -26,6 +27,8 @@ const Navbar = () => {
      const user = await signOut(auth)
      console.log(user,'logout')
      navigate('/login')
+     localStorage.removeItem(USER)
+    
     }
     catch(error:any){
      console.log(error?.message)
