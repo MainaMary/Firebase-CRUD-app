@@ -19,6 +19,7 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
     timeStamp: '',
     id: ''
   })
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const { setEdit,handleModal,} = useAuthContext()
   const { title, desc, img, timeStamp, id } = item;
   const handleDelete = async (id: string) => {

@@ -7,6 +7,8 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
+import { toast } from "react-toastify";
+
 import CustomInput from "../../components/CustomInput";
 import CustomLabel from "../../components/CustomLabel";
 import { ActionTypes } from "../../utils/types";
@@ -16,7 +18,6 @@ import CustomButton from "../../components/CustomButton";
 import { validateEmail } from "../../utils/tools";
 import { formReducer } from "../../reducer/formReducer";
 import { useAuthContext } from "../../context/authContext";
-import { toast } from "react-toastify";
 import Title from "../../components/Title";
 
 interface ErrorTypes {
@@ -36,8 +37,8 @@ const SignUp = () => {
     email: "",
     password: "",
   };
-  const [state, dispatch]: any = useReducer<any>(formReducer, initialState);
-  const [error, setError] = useState<string>("");
+  const [state, dispatch]:any = useReducer<any>(formReducer, initialState);
+  const [error, setError] = useState("");
   const [formErrors, setFormErrors] = useState<Errors>({
     password: "",
     name: "",
@@ -123,7 +124,6 @@ const SignUp = () => {
           email,
           password
         );
-        setLoading(false);
         
         const user: any = auth?.currentUser;
         updateProfile(user, { displayName: name });
@@ -141,16 +141,20 @@ const SignUp = () => {
           navigate("/login");
         }, 100);
       }
-    } catch (error: any) {
-      console.log(error.message);
-      setLoading(false);
+    } catch (error: unknown) {
+
+     if(error instanceof Error){
       if (error.message.includes("email-already-in-use")) {
         setTimeout(() => {
           setError("Email already exist");
         }, 200);
       }
+     }
+      
+    }finally{
+      setLoading(false);
     }
-    setLoading(false);
+   
   };
   const signInWithGoogle = async (e: any) => {
     e.preventDefault();
