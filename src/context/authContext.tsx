@@ -11,7 +11,8 @@ import { USER, FormProps } from "../utils/types";
 import { InitialValues } from "../utils/tools";
 
 const initialState = {
-  currentUser: JSON.parse(localStorage.getItem('currentUser') || '{}')
+  currentUser: localStorage.getItem(USER) ? JSON.parse(localStorage.getItem(USER) || '')
+  : null,
   
 };
 const initialFormState = {
@@ -41,7 +42,7 @@ const AuthContext = createContext<{
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   edit: boolean;
   openModal: boolean;
-  handleModal: any;
+  handleModal: () =>void;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   itemList: FormProps;
   setItemList: React.Dispatch<React.SetStateAction<FormProps>>;
@@ -64,7 +65,7 @@ const AuthContextProvider = ({ children }: ChildrenProps) => {
   useEffect(() => {
     console.log({currentUser: state.currentUser})
     if (state.currentUser) {
-      localStorage.setItem(USER, JSON.stringify(state.currentUser));
+      localStorage.setItem(USER, JSON.stringify(state?.currentUser));
     }
   }, [state.currentUser]);
   const value = {
