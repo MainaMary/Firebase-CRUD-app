@@ -15,6 +15,7 @@ import Title from '../../components/Title'
 import CustomLoader from '../../components/CustomLoader'
 import ForgotPassword from '../user/ForgotPassword'
 import { validateEmail } from '../../utils/tools'
+import { onAuthStateChanged } from 'firebase/auth'
 const Signin = () => {
   const initialState = {
     email: '',
@@ -26,6 +27,7 @@ const Signin = () => {
   const [error,setError] = useState<string>('')
   const {dispatchUser, handleModal, state:user} = useAuthContext()
   const [pswdModal, setPswdModal] = useState<boolean>(false)
+  
   const navigate = useNavigate()
   const handleInputChange= (event:any)=>{
     const {name, value} = event.target
@@ -36,52 +38,67 @@ const Signin = () => {
     })
   }
   const {email, password} = state
-  const handleSubmit = async (e:any)=>{
+
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+  //     setUserDetails(currentUser)
+  //   });
+
+  //   return () => {
+  //     unsubscribe();
+  //   };
+  // }, []);
+ 
+ 
+  const handleSubmit = async (e:React.SyntheticEvent)=>{
     e.preventDefault()
     if (!email || !password) {
       setError("Please provide all details");
+      return
     }
     
     if (email && !validateEmail(email)) {
       setError('Please use a valid email address')
+      return
     
-    }
-    setLoading(true)
+    } 
+    
     try {
-      console.log(email, password);
-      if ( password && email) {
+      setLoading(true)
        const userCredential = await signInWithEmailAndPassword(auth, email, password);
        dispatchUser({type:ActionTypes.login, payload: userCredential?.user})
+       toast.success('Log in succesfully')
        navigate("/imageList")
+       
       //  handleModal()
-      }
-
-      setLoading(false);
+      
       setError("");
     }
-   catch(error:any){
-    console.log(error.message)
-    if(error.message.includes('auth/user-not-found')){
-      setError('Email does not exist')
+   catch(error:unknown){
+    if(error instanceof Error){
+      if(error.message.includes('auth/user-not-found')){
+        setError('Email does not exist')
+      }
+      if(error.message.includes('auth/wrong-password')){
+        setError('Please provide a valid password')
+      }
     }
-    if(error.message.includes('auth/wrong-password')){
-      setError('Please provide a valid password')
-    }
+   }finally{
     setLoading(false);
    }
-   setLoading(false);
+  
   }
   const handleForgotPassword = () =>{
   setPswdModal(prev => !prev)
   }
   useEffect(()=>{
-    if(user.currentUser){
-    console.log(user.currentUser)
+    if(user?.currentUser){
+   
      toast.success('Log in succesfully')
      
      navigate("/imageList");
     }
-   },[user.currentUser])
+   },[user?.currentUser])
   return (
     <>
     <div className='w-full md:w-[50%] shadow-lg rounded-2xl flex m-auto bg-white px-8 py-3 items-center justify-center h-auto mt-12'>
@@ -105,7 +122,7 @@ const Signin = () => {
       </div>
       <div className="my-4 block  md:flex justify-between">
         <p>Don't have an account? <span className="text-[#200E32] font-semibold"><Link to="/register">Sign up</Link></span></p>
-        <p className='text-[#200E32]  cursor-pointer font-semibold' onClick={handleForgotPassword}>Forgot password?</p>
+        {/* <p className='text-[#200E32]  cursor-pointer font-semibold' onClick={handleForgotPassword}>Forgot password?</p> */}
       </div>
       <div className="my-4">
         <CustomButton type="submit">{loading ? <CustomLoader/> :"Sign in"}</CustomButton>

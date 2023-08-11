@@ -2,16 +2,16 @@ import React, { useReducer, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { auth, db } from "../../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { toast } from "react-toastify";
 
+import { auth, db } from "../../firebase";
 import CustomInput from "../../components/CustomInput";
 import CustomLabel from "../../components/CustomLabel";
-import { ActionTypes } from "../../utils/types";
+import { ActionTypes, ErrorTypes,Errors } from "../../utils/types";
 import useVisibleHook from "../../hooks/useVisibleHook";
 import CustomLoader from "../../components/CustomLoader";
 import CustomButton from "../../components/CustomButton";
@@ -20,17 +20,7 @@ import { formReducer } from "../../reducer/formReducer";
 import { useAuthContext } from "../../context/authContext";
 import Title from "../../components/Title";
 
-interface ErrorTypes {
-  pswdErr: string;
-  nameErr: string;
-  emailErr: string;
-}
 
-type Errors = {
-  password: string;
-  email: string;
-  name: string;
-};
 const SignUp = () => {
   const initialState = {
     name: "",
@@ -39,18 +29,15 @@ const SignUp = () => {
   };
   const [state, dispatch]:any = useReducer<any>(formReducer, initialState);
   const [error, setError] = useState("");
-  const [formErrors, setFormErrors] = useState<Errors>({
-    password: "",
-    name: "",
-    email: "",
-  });
+  const [formErrors, setFormErrors] = useState(initialState);
   const {state:user} = useAuthContext()
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const { visible, handleVisisble } = useVisibleHook();
+
   const googleProvider = new GoogleAuthProvider();
   const navigate = useNavigate();
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setError('')
     dispatch({
@@ -59,7 +46,7 @@ const SignUp = () => {
     });
   };
   const { name, email, password } = state;
-  console.log(auth?.currentUser, "user");
+  
   useEffect(() => {
     const errors = {} as Errors;
 
@@ -84,6 +71,7 @@ const SignUp = () => {
     if (!Object.keys(formErrors).length) {
     }
   }, [formErrors.password, formErrors.email, formErrors.name]);
+  
   const handleValidation = () => {
     const errors = {} as Errors;
     if (!password) {
@@ -105,7 +93,8 @@ const SignUp = () => {
     return errors;
   };
   const reset = () => dispatch({ type: ActionTypes.reset });
-  const handleSubmit = async (e: any) => {
+  console.log(auth.currentUser,'auth')
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setFormErrors(handleValidation());
     if (!name || !email || !password) {
@@ -229,7 +218,7 @@ const SignUp = () => {
               <Link to="/login">Sign in</Link>
             </span>
           </p>
-          <p>Forgot password?</p>
+          {/* <p>Forgot password?</p> */}
         </div>
         <div className="my-4">
           <CustomButton type="submit">
