@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { getDocs,deleteDoc, doc , collection } from "firebase/firestore";
+import { getDocs,deleteDoc, doc , collection} from "firebase/firestore";
 import { db } from "../../firebase";
 import { FormProps } from "../../utils/types";
 import Modal from "../../components/Modal";
 import { useAuthContext } from "../../context/authContext";
 import CustomButton from "../../components/CustomButton";
+import { imageCollectionRef } from "../../constants";
 
 interface ItemProps {
   item: FormProps;
@@ -20,7 +21,7 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
     id: ''
   })
   const [isSubmit, setIsSubmit] = useState<boolean>(false)
-  const { setEdit,handleModal,} = useAuthContext()
+  const { setEdit,handleModal} = useAuthContext()
   const { title, desc, img, timeStamp, id } = item;
   const handleDelete = async (id: string) => {
     try {
@@ -65,32 +66,49 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
 };
 const ImageList = () => {
   const { openModal, handleModal, itemList, setItemList} = useAuthContext()
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const handleFetch = async () => {
-      let list: any = [];
-      try {
-        const querySnapshot = await getDocs(collection(db, "cities"));
-        querySnapshot.forEach((doc) => {
-          list.push({ id: doc?.id, ...doc?.data() });
-        });
-        setData(list);
-      } catch (error: any) {
-        console.log(error);
-      }
-    };
-    handleFetch();
-  }, []);
+  const [data, setData] = useState<any>([]);
+  useEffect(() =>{
+    const getImages = async () =>{
+    const data = await getDocs(imageCollectionRef)
+    const res = data.docs?.map(doc =>({...doc.data(), id:doc.id}))
+    console.log(res)
+    setData(res)
+    }
+    getImages()
+  },[itemList])
+  const handleFetch = async () => {
+    let list: any = [];
+    try {
+      const querySnapshot = await getDocs(collection(db, "cities"));
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id)
+        list.push({ id: doc?.id, ...doc?.data() });
+        
+      });
+      setData(list);
+        console.log(list)
+     
+    
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+  // useEffect(() => {
+    
+  //   handleFetch();
+  // }, [itemList.id]);
  
  
   const handleDelete = async (id: string) => {
-    console.log('deleted item')
-    console.log({id})
     try {
-      const imageDoc = doc(db, "cities", id)
-      await deleteDoc(imageDoc);
+      const imageDocRef = doc(imageCollectionRef, id)
       const filteredItems = data.filter((item: FormProps) => item.id !== id);
       setData(filteredItems);
+     const response = await deleteDoc(imageDocRef);
+
+      console.log(response)
+
+      
     } catch (error: any) {
       console.log(error);
     }
@@ -100,14 +118,25 @@ const ImageList = () => {
    console.log(item,'handle Edit')
     //setEdit(true)
      handleModal()
-    const imageDoc = doc(db,"cities", item.id)
-    
-    //await updateDoc(imageDoc,item);
   };
+  const handleUpload = () =>{
+    setItemList({
+      title: '',
+      desc: '',
+      img: '',
+      timeStamp: '',
+      id: ''
+    })
+    handleModal()
+  }
  
  console.log({data})
   return (
     <>
+    <div className="flex justify-between h-auto items-center">
+      <h3>Photos</h3>
+      <CustomButton onClick={handleUpload}>Upload image</CustomButton>
+    </div>
      <div className="grid justify-items-stretch grid-cols-1 md:grid-cols-4 gap-12 pt-24">
       {data.map((item: FormProps,index:number) => (
         // <ImageCard key={item.id} item={item} data={data} setData={setData} />
