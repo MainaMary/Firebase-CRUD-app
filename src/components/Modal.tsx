@@ -2,16 +2,10 @@ import React, { Children, ReactNode } from 'react'
 import FormModal from './FormModal';
 import FormEdit from './FormEdit';
 import { useAuthContext } from '../context/authContext';
-import { FormProps } from '../utils/types';
-interface Props {
-    openModal?: boolean;
-    handleModal : () => void;
-    children?: ReactNode; 
-   
-}
-const Modal = (props:Props) => {
+import { M } from '../utils/types';
+
+const Modal = (props:M) => {
     const {openModal, handleModal} = props
-    const {edit} = useAuthContext()
      
     if(!openModal) return null
   return (

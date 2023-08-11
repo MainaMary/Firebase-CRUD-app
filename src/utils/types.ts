@@ -52,3 +52,19 @@ export interface MsgProps {
     timeStamp: string;
     id: string;
   }
+  export interface ErrorTypes {
+    pswdErr: string;
+    nameErr: string;
+    emailErr: string;
+  }
+  
+  export type Errors = {
+    password: string;
+    email: string;
+    name: string;
+  };
+  export interface M{
+    openModal?: boolean;
+    handleModal : () => void;
+    children?: ReactNode; 
+  }

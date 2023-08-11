@@ -10,12 +10,13 @@ import { FiMenu } from "react-icons/fi";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaUserAlt } from "react-icons/fa";
 import { USER } from "../utils/types";
+import { ActionTypes } from "../utils/types";
 
 const Navbar = () => {
-  const [userTooltip, setUserToolTip] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false)
+  const [userTooltip, setUserToolTip] = useState(false);
+  const [open, setOpen] = useState(false)
   const navigate = useNavigate();
-  const { openModal, handleModal, state } = useAuthContext();
+  const { openModal, handleModal, state, dispatchUser } = useAuthContext();
   const handleTooltip = () => {
     setUserToolTip((prev) => !prev);
   };
@@ -27,6 +28,7 @@ const Navbar = () => {
      const user = await signOut(auth)
      console.log(user,'logout')
      navigate('/login')
+     dispatchUser({type:ActionTypes.login, payload: {}})
      localStorage.removeItem(USER)
     
     }
@@ -43,10 +45,7 @@ const Navbar = () => {
       
       <div className={open ?  "fixed w-[60%] top-0 left-0": "hidden md:block"} >
         {state ? (
-          <div className="flex h-auto items-center">
-            <div>
-              <CustomButton onClick={handleModal} >Upload image</CustomButton>
-            </div>
+          <div className="flex h-auto items-center z-index">
             <div>
               <FaUserAlt onClick={handleTooltip} size={25} />
               {userTooltip && (
