@@ -1,3 +1,4 @@
+import {USER} from "./types"
 export const validateEmail = (email: string) => {
     return String(email)
       .toLowerCase()
@@ -12,3 +13,4 @@ export const validateEmail = (email: string) => {
     timeStamp: "",
     id: "",
   };
+  export const userExist = localStorage.getItem(USER)

@@ -15,6 +15,7 @@ const initialState = {
   : null,
   
 };
+
 const initialFormState = {
     title: "",
     desc: "",
@@ -37,7 +38,7 @@ const initialContext = {
 
 
 const AuthContext = createContext<{
-  state: any,
+  state: any
   dispatchUser: React.Dispatch<any>;
   setEdit: React.Dispatch<React.SetStateAction<boolean>>;
   edit: boolean;
@@ -79,6 +80,7 @@ const AuthContextProvider = ({ children }: ChildrenProps) => {
     itemList,
     setItemList,
   };
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 export default AuthContextProvider;

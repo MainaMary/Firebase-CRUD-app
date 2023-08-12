@@ -45,7 +45,7 @@ const handleSubmit = (e:any) => {
     e.preventDefault()
 console.log(itemList)
 try{
-    const docRef = doc(db, "cities", itemList.id);
+    const docRef = doc(db, "images", itemList.id);
     const res = updateDoc(docRef,{...itemList})
     handleModal()
 }

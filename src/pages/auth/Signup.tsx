@@ -2,7 +2,7 @@ import React, { useReducer, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { User, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { signInWithPopup } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
@@ -30,7 +30,7 @@ const SignUp = () => {
   const [state, dispatch]:any = useReducer<any>(formReducer, initialState);
   const [error, setError] = useState("");
   const [formErrors, setFormErrors] = useState(initialState);
-  const {state:user} = useAuthContext()
+  const {state:user, dispatchUser} = useAuthContext()
   const [loading, setLoading] = useState(false);
   const { visible, handleVisisble } = useVisibleHook();
 
@@ -114,16 +114,21 @@ const SignUp = () => {
           password
         );
         
-        const user: any = auth?.currentUser;
+        const user = auth.currentUser as User
         updateProfile(user, { displayName: name });
+
+        // Creating a clone of the 'state' object without the "password" property
         const stateClone = Object.assign({}, state);
         delete stateClone["password"];
         stateClone.timeStamp = serverTimestamp();
-        console.log(stateClone, "state clone");
-        console.log(userCredential,'usercredential')
+
+        // Creating a reference to a Firestore document using the user's UID
         const docRef = doc(db, "users", userCredential?.user?.uid);
+        
+        // Saving the modified state data to the Firestore document
         const saveTodb = await setDoc(docRef, stateClone);
-        console.log(saveTodb, "response");
+        
+
         setError("");
         reset();
         setTimeout(() => {
@@ -145,21 +150,8 @@ const SignUp = () => {
     }
    
   };
-  const signInWithGoogle = async (e: any) => {
-    e.preventDefault();
-    try {
-      const { user } = await signInWithPopup(auth, googleProvider);
-      console.log(user, "google response");
-      if(user){
-        navigate('/')
-      }
-      const docRef = doc(db, "users", user?.uid)
-      const docSnap = await getDoc(docRef)
-      console.log(docSnap)
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  
+  
   useEffect(()=>{
     if(user.currentUser){
     
@@ -226,7 +218,7 @@ const SignUp = () => {
           </CustomButton>
         </div>
       </form>
-      <form onSubmit={signInWithGoogle}>
+      <form >
         <div className="my-4 items-center flex before:border-t-2 before:flex-1  before:border-gray-500  after:border-t-2 after:flex-1  after:border-gray-500">
           <p className="uppercase text-center font-medium text-2xl mx-2">or</p>
         </div>

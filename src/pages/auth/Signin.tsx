@@ -65,7 +65,9 @@ const Signin = () => {
     
     try {
       setLoading(true)
-       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      console.log({userCredential})
        dispatchUser({type:ActionTypes.login, payload: userCredential?.user})
        toast.success('Log in succesfully')
        navigate("/imageList")

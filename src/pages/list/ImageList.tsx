@@ -6,6 +6,7 @@ import Modal from "../../components/Modal";
 import { useAuthContext } from "../../context/authContext";
 import CustomButton from "../../components/CustomButton";
 import { imageCollectionRef } from "../../constants";
+import { getImages } from "../../services";
 
 interface ItemProps {
   item: FormProps;
@@ -25,12 +26,12 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
   const { title, desc, img, timeStamp, id } = item;
   const handleDelete = async (id: string) => {
     try {
-      const imageDoc = doc(db, "cities", id)
+      const imageDoc = doc(db, "images", id)
       await deleteDoc(imageDoc);
       const filteredItems = data.filter((item: FormProps) => item.id !== id);
       setData(filteredItems);
-    } catch (error: any) {
-      console.log(error);
+    } catch (error) {
+     throw error
     }
   };
   const handleEdit = async (item:FormProps) => {
@@ -38,7 +39,7 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
    console.log(item,'handle Edit')
     setEdit(true)
      handleModal()
-    const imageDoc = doc(db,"cities", id)
+    const imageDoc = doc(db,"images", id)
     
     //await updateDoc(imageDoc,item);
   };
@@ -66,20 +67,19 @@ export const ImageCard = ({ item, data, setData }: ItemProps) => {
 };
 const ImageList = () => {
   const { openModal, handleModal, itemList, setItemList} = useAuthContext()
-  const [data, setData] = useState<any>([]);
-  useEffect(() =>{
-    const getImages = async () =>{
-    const data = await getDocs(imageCollectionRef)
-    const res = data.docs?.map(doc =>({...doc.data(), id:doc.id}))
-    console.log(res)
-    setData(res)
+  const [data, setData] = useState<FormProps[]>([]);
+  useEffect(() => {
+    async function fetchData() {
+      const images = await getImages() as FormProps[];
+      console.log(images,'images')
+      setData(images);
     }
-    getImages()
-  },[itemList])
+    fetchData();
+  }, []);
   const handleFetch = async () => {
     let list: any = [];
     try {
-      const querySnapshot = await getDocs(collection(db, "cities"));
+      const querySnapshot = await getDocs(collection(db, "images"));
       querySnapshot.forEach((doc) => {
         console.log(doc.id)
         list.push({ id: doc?.id, ...doc?.data() });
@@ -93,24 +93,20 @@ const ImageList = () => {
       console.log(error);
     }
   };
-  // useEffect(() => {
-    
-  //   handleFetch();
-  // }, [itemList.id]);
  
- 
+
   const handleDelete = async (id: string) => {
     try {
       const imageDocRef = doc(imageCollectionRef, id)
-      const filteredItems = data.filter((item: FormProps) => item.id !== id);
+      const filteredItems = data.filter((item) => item.id !== id);
       setData(filteredItems);
      const response = await deleteDoc(imageDocRef);
 
       console.log(response)
 
       
-    } catch (error: any) {
-      console.log(error);
+    } catch (error) {
+      throw error
     }
   };
   const handleEdit = async (item:FormProps) => {
@@ -150,7 +146,7 @@ const ImageList = () => {
         </div>
         <div className="flex justify-between">
           <button className="  cursor-pointer rounded-lg px-5 py-2.5 mr-2 mb-2 border-solid border-2 hover:bg-[#200E32] hover:text-white focus:ring-4 focus:none border-[#200E32] bg-transparent text-[#200E32]" onClick={() =>{ handleEdit(item), setItemList(item);}}>Edit</button>
-          <button className=" cursor-pointer rounded-lg px-5 py-2.5 mr-2 mb-2 border-solid border-2 bg-transparent border-red-700 text-red-700" onClick={() => handleDelete(item.id)}>Delete</button>
+          <button className=" cursor-pointer rounded-lg px-5 py-2.5 mr-2 mb-2 border-solid border-2 bg-transparent border-red-700 text-red-700">Delete</button>
         </div>
       </div>
       ))}
