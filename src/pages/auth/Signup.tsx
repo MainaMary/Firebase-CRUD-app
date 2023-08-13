@@ -38,7 +38,7 @@ const SignUp = () => {
   const navigate = useNavigate();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target as HTMLInputElement
     setError('')
     dispatch({
       type: ActionTypes.textInput,
